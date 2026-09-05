@@ -177,7 +177,17 @@ export const WhereIsMyBusPage: React.FC = () => {
     let isCancelled = false;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
-    const wsBase = import.meta.env.VITE_WS_URL || `${protocol}//${host}`;
+    const isLocalhost =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+       window.location.hostname === '127.0.0.1' ||
+       window.location.hostname === '0.0.0.0');
+
+    const defaultWsBase = isLocalhost
+      ? `${protocol}//${host}`
+      : 'wss://urja-backend-1.onrender.com';
+
+    const wsBase = import.meta.env.VITE_WS_URL || defaultWsBase;
     const wsParams = new URLSearchParams();
     if (selectedCity) wsParams.set('city', selectedCity);
     if (selectedRouteId !== 'all') wsParams.set('route_id', selectedRouteId);
